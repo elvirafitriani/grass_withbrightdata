@@ -67,23 +67,14 @@ async def connect_to_wss(http_proxy, user_id):
             logger.error(http_proxy)
 
 async def main():
-    # Read account list from account.json
-    with open('account.json', 'r') as account_file:
-        accounts = json.load(account_file)
+    # Define your HTTP proxy here for a single account
+    http_proxy = 'http://brd-customer-hl_6edd1de4-zone-isp_proxy1-country-it:dmloes25thb2@brd.superproxy.io:33335'
     
-    # Create connection tasks for each account and their respective proxies
-    tasks = []
-    for account in accounts:
-        user_id = account["_user_id"]
-        
-        # Define your HTTP proxy here
-        http_proxy = 'http://brd-customer-hl_6edd1de4-zone-isp_proxy1-country-it:dmloes25thb2@brd.superproxy.io:33335'
-        
-        # Create a connection for each proxy
-        tasks.append(asyncio.ensure_future(connect_to_wss(http_proxy, user_id)))
+    # Read user ID from account.txt
+    with open('account.txt', 'r') as account_file:
+        user_id = account_file.readline().strip()  # Read the first line and remove any surrounding whitespace
     
-    # Run all connections
-    await asyncio.gather(*tasks)
+    await connect_to_wss(http_proxy, user_id)
 
 if __name__ == '__main__':
     asyncio.run(main())
